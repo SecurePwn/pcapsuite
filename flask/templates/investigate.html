@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Investigate Page</title>
+    <style>
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #3498db;
+          }
+          
+          li {
+            float: left;
+          }
+          
+          li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+          }
+          
+         
+        /* Header styles */
+        h1 {
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+          }
+          
+          td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+          }
+          
+          tr:nth-child(even) {
+            background-color: #dddddd;
+          }
+
+        /* Form container styles */
+        .form-container {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            width: 300px;
+            margin: 20px auto;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Label and select styles */
+        label, select {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Button styles */
+        .blue-button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .blue-button:hover {
+            background-color: blue;
+        }
+
+        /* Response styles */
+        #response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        /* Response text styles */
+        #response h2 {
+            color: #3498db;
+        }
+
+        #response p {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <ul>
+        <li><a class="active" href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('investigate') }}">Investigate</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    <div class="form-container">
+        <form method="POST" action="/investigate">
+            <label for="scan_select">Select a Scan:</label>
+            <select name="scan" id="scan_select">
+                <option value="magic_bytes_find_all">All Magic Bytes Scan</option>
+                <option value="file_scan">Files scan</option>
+                <option value="scan3">Scan 3</option>
+                <!-- Add more scan options here -->
+            </select>
+            <br>
+            <button class="blue-button" type="submit">Investigate</button>
+        </form>
+    </div>
+    <div id="response">
+        {% if result %}
+        <h2>Message:</h2>
+        <p>{{ result }}</p>
+        {% endif %}
+    </div>
+        {% if magic_bytes_find_all %}
+        
+        <table>
+            <tr>
+                <th>File type</th>
+                <th>Number of files found (probability)</th>
+            </tr>
+            {% for data in magic_bytes_find_all %}
+            <tr>
+                <td>{{data[0]}}</td>
+                <td>{{data[1]}}</td>
+            </tr>
+        
+        
+        {% endfor %}
+    </table>
+        {% endif %}
+    
+        {% if file_scan %}
+        
+        <table>
+            <tr>
+                <th>File Name</th>
+                <th>Magic Byte matched</th>
+                <th>Packet Number</th>
+                <th>Source IP</th>
+                <th>Destination IP</th>
+                <th>TCP Communication (For Understanding)</th>
+                <th>Source Port</th>
+                <th>Destination Port</th>
+            </tr>
+
+            
+                {% for data in file_scan %}
+                <tr>
+                {% for i in data %}
+                    <td>{{i}}</td>
+                {% endfor %}
+            </tr>
+                {% endfor %}
+            
+        </table>
+
+        {% endif %}
+    
+</body>
+</html>

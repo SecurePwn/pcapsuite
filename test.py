@@ -1,53 +1,69 @@
-import pyshark
-
-def file(pcap, magic):
-    print("Scanning for magic bytes...")
+from scapy.utils import RawPcapReader
+from scapy.all import PcapReader
+from magic_headers import magic_list
+from scapy.layers.inet import *
+from scapy.layers.l2 import Ether
+from scapy.layers import http
+from scapy.all import *
     
-    # Open the pcap file
-    try:
-        capture = pyshark.FileCapture(pcap, keep_packets=False)
-        # capture.set_debug()
-        for packet in capture:
-            pkt=str(packet)
-            hexData=''.join([hex(ord(char))[2:] for char in pkt])
-            # magic=magic.replace(' ','')
-            if "706e67" in str(hexData):
-                print(pkt)
-            # print(hexData)
-            
-        print("not found")
-            
-            
-    except FileNotFoundError:
-        print(f"Error: The file '{pcap}' does not exist.")
-        return
+def magic_bytes_find_all(pcap):
+    data_structure={}
+    count=0
+    magic_lists=magic_list()
+    meta={}
+    for (packets,metadata) in RawPcapReader(pcap):
+        count+=1
+        meta={}
+        hexPacket=''.join([format(byte, '02x') for byte in packets])
+        for each_magic in magic_lists:
+            x=str(each_magic[1]).replace(" ","").lower() #this is magic byte
+            y=str(each_magic[0]) #this is value of magic byte like WIndows PE or Zip file
+            if x in str(hexPacket):
+                meta["number"]=count
+                meta[""]
+                if y in data_structure:
+                    data_structure[y]["number"]+=1
+                else:
+                    data_structure[y]={"number":1}
+                   
+    return data_structure
 
-def method2(pcap,magic):
-    from scapy.all import rdpcap
-    num=0
-    protocols = {
-    "FTP": 0,
-    "HTTP": 0,
-    "SSH": 0,
-    # Add more protocols as needed
-}
-   
-    pcap = rdpcap(pcap)
-    protocol_counts = {}
-    http_count = 0
-    ftp_count = 0
-    for packet in pcap:
-        if packet.haslayer("TCP"):
-            src_port = packet.getlayer("TCP").sport
-            dst_port = packet.getlayer("TCP").dport
-            
-            if src_port == 80 or dst_port == 80:
-                http_count += 1
-            if src_port == 20 or dst_port == 20 or src_port == 21 or dst_port == 21:
-                ftp_count += 1
-    print(f"HTTP:{http_count} \nFTP: {ftp_count}")
+def file_scan(pcap):
+    count=0
+    magicbytes=magic_list()
+    finalData=[]
+    for (packets,metadata) in RawPcapReader(pcap):
+        count+=1                  
+        hexPacket=''.join([format(byte, '02x') for byte in packets])
+        for each_magic in magicbytes:
+            x=str(each_magic[1]).replace(" ","").lower() #this is magic byte
+            y=str(each_magic[0]) #this is value of magic byte like WIndows PE or Zip file
+            if x in str(hexPacket):
+                block=[y,x,count,
+                       str(Ether(packets)[IP].src),
+                       str(Ether(packets)[IP].dst),
+                      str(Ether(packets)[IP]),
+                       Ether(packets)[IP].sport,
+                        Ether(packets)[IP].dport]
+                #[File name, File magic byte, source IP, Destination IP, TCP Communication for better understanding, Source Port, Destination Port]
+                finalData.append(block)
+    for i in finalData:
+        print(i)
+        
 
 
-pcap="file.pcap"
-magic="706e67"
-file(pcap,magic)
+pcapfile="zip.pcap"
+data=file_scan(pcapfile)
+# ret=[]
+# for i in data:
+#     block=[i,data[i]["number"]]
+#     ret.append(block)
+
+
+
+# for d in data:
+#     print(f"{d}:{data[d]}")
+
+# for (packets,metadata) in RawPcapReader(pcapfile):
+#     packet=ether(packets)
+    
