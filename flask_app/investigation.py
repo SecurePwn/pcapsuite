@@ -39,6 +39,25 @@ def file_scan(pcap):
                       str(Ether(packets)[IP]),
                        Ether(packets)[IP].sport,
                         Ether(packets)[IP].dport]
-                #[File name, File magic byte, source IP, Destination IP, TCP Communication for better understanding, Source Port, Destination Port]
+                #[File name, File magic byte, Packet No, source IP, Destination IP, TCP Communication for better understanding, Source Port, Destination Port]
+                finalData.append(block)
+    return finalData
+
+
+def magic_scan(pcap,magic):
+    count=0
+    magicbyte=magic
+    finalData=[]
+    for (packets,metadata) in RawPcapReader(pcap):
+        count+=1                  
+        hexPacket=''.join([format(byte, '02x') for byte in packets])
+        if str(magicbyte).replace(" ","").lower() in str(hexPacket):
+                block=[count,
+                       str(Ether(packets)[IP].src),
+                       str(Ether(packets)[IP].dst),
+                      str(Ether(packets)[IP]),
+                       Ether(packets)[IP].sport,
+                        Ether(packets)[IP].dport]
+                #[Count,source IP, Destination IP, TCP Communication for better understanding, Source Port, Destination Port]
                 finalData.append(block)
     return finalData

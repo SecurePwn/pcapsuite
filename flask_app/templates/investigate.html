@@ -2,7 +2,8 @@
 <html>
 <head>
     <title>Investigate Page</title>
-    <style>
+    <link rel="icon" href="{{ url_for('static', filename='logo1.png') }}" type="image/x-icon">
+   <style>
         /* Global styles */
         body {
             font-family: Arial, sans-serif;
@@ -98,14 +99,31 @@
         #response h2 {
             color: #3498db;
         }
-
+        #image{
+            height: 16%;
+            width: 16%;
+            float: left;
+        }
         #response p {
             font-size: 16px;
         }
     </style>
 </head>
 <body>
+    <script>
+        function showInputField() {
+            var select = document.getElementById("scan_select");
+            var inputField = document.getElementById("magicByteInputField");
+    
+            if (select.value === "magic_byte") {
+                inputField.style.display = "block";
+            } else {
+                inputField.style.display = "none";
+            }
+        }
+    </script>
     <ul>
+        <li> <a class="active" href="https://linkedin.com/company/secure-pwn" target="_blank"> <img id="image" src="{{ url_for('static', filename='logo1.png') }}"></a> </li>
         <li><a class="active" href="{{ url_for('index') }}">Home</a></li>
         <li><a href="{{ url_for('investigate') }}">Investigate</a></li>
         <li><a href="#about">About</a></li>
@@ -113,12 +131,16 @@
     <div class="form-container">
         <form method="POST" action="/investigate">
             <label for="scan_select">Select a Scan:</label>
-            <select name="scan" id="scan_select">
+            <select name="scan" id="scan_select" onchange="showInputField()">
                 <option value="magic_bytes_find_all">All Magic Bytes Scan</option>
                 <option value="file_scan">Files scan</option>
-                <option value="scan3">Scan 3</option>
+                <option value="magic_byte">Magic Byte Scan</option>
                 <!-- Add more scan options here -->
             </select>
+            <div id="magicByteInputField" style="display: none;">
+                <label for="magicByteInput">Enter Magic Byte:</label>
+                <input type="text" id="magicByteInput" name="magic_byte_input">
+            </div>
             <br>
             <button class="blue-button" type="submit">Investigate</button>
         </form>
@@ -163,6 +185,31 @@
 
             
                 {% for data in file_scan %}
+                <tr>
+                {% for i in data %}
+                    <td>{{i}}</td>
+                {% endfor %}
+            </tr>
+                {% endfor %}
+            
+        </table>
+
+        {% endif %}
+
+        {% if magic_scan %}
+        
+        <table>
+            <tr>
+                <th>Packet Number</th>
+                <th>Source IP</th>
+                <th>Destination IP</th>
+                <th>TCP Communication (For Understanding)</th>
+                <th>Source Port</th>
+                <th>Destination Port</th>
+            </tr>
+
+            
+                {% for data in magic_scan %}
                 <tr>
                 {% for i in data %}
                     <td>{{i}}</td>

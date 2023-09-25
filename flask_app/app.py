@@ -65,8 +65,23 @@ def investigate():
                 return render_template("investigate.html",file_scan=dataS)
             else:
                 return render_template("investigate.html",result="Please upload valid pcap file ending with .pcap")
-                
-    return render_template("investigate.html",result=f"You selected {str(select)}")
+        
+        
+        if select=="magic_byte":
+            files = os.listdir("uploads")
+            if len(files)>1:
+                return render_template("investigate.html",result=f"Please upload the file again. there are more than 1 files in the uploads folder.")
+            if len(files)==0:
+                return render_template("investigate.html",result=f"Please upload the file again. there is no file found in uploads folder. Please make sure to upload file via web from / endpoint.")
+            if  str(files[0]).endswith("pcap"):
+                mbyte=request.form["magic_byte_input"]
+                mbyte=str(mbyte).replace(" ","").lower()
+                dataS=magic_scan(f"uploads/{str(files[0])}",mbyte)
+                return render_template("investigate.html",magic_scan=dataS)
+            else:
+                return render_template("investigate.html",result="Please upload valid pcap file ending with .pcap")
+        
+    return render_template("investigate.html")
  
  
  

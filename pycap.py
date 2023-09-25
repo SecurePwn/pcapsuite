@@ -1,6 +1,7 @@
 import sys
 import pyshark
 import binascii
+from flask_app.investigation import *
 
 def scan_files(pcap_file):
     # Placeholder for actual scan functionality
@@ -8,81 +9,37 @@ def scan_files(pcap_file):
 
 def banner():
     print(r'''
-          ██████  ███████    ██████       █████   █     █  ██   █                                       
-          █       █         █             █    █  █     █  █ █  █              
-           ████   ███████  █         ███  █████   █  █  █  █  █ █                                  
-               █  █         █             █       █ █ █ █  █   ██          
-          ██████  ███████    ██████       █       ██   ██  █    █
+          ██████  ███████     ███████       ██████   █     █  ██    █                                       
+          █       █          █              █    █   █     █  █ █   █              
+           ████   ███████  █           ███  ██████   █  █  █  █  █  █                                  
+               █  █          █              █        █ █ █ █  █   █ █          
+          ██████  ███████     ███████       █        ██   ██  █    ██
 
           (Pre-Forensics & Penetration Tester's tool)
+          (This tool gives false positive too, but I never try to skip them.)
 ''')
 
 def menu():
     banner="""
 Author: @syedalizain033
 Email: syedalizain03@gmail.com
-Usage: python3 pycap.py <pcap file> <action> <required args>
-Example: python3 pycap.py scan.pcap filescan '89 50 4E 47 0D 0A 1A 0A'
+Usage: python3 pycap.py <pcap file> --<action> <required args if any>
+Example: python3 pycap.py scan.pcap --scanmagic '89 50 4E 47 0D 0A 1A 0A'
     """
     print(banner)
     
 #-----------------------------------------------------------
 def listActions():
     list={
-        "scan":"Scan all PCAP file for all the results",
-        "files":"Scan all the file magic bytes if existing",
-        "file":"Provide magic bytes to scan. Example: -magic 05 05 05 05 "
+        "--scan_magic_detail":"Scan all PCAP file for all the results",
+        "--scan_magics":"Scan all the file magic bytes if existing and get total numbers estimated",
+        "--magicbyte":"Provide magic bytes to scan. Example: \"05 05 05 05\" or \"05050505\""
     }
-    return list
+    for i in list:
+        print(f"{i}:     {list[i]}")
 #-----------------------------------------------------------
 
-def file(pcap, magic):
-    print("Scanning for magic bytes...")
-    
-    # Open the pcap file
-    try:
-        all=''
-        capture = pyshark.FileCapture(pcap)
-        for p in capture:
-            all=all+str(p)
-        if magic in all:
-            print("magic found")
-    except FileNotFoundError:
-        print(f"Error: The file '{pcap}' does not exist.")
-        return
 
-    magic_bytes = magic.replace(" ", "").upper()  # Remove spaces and convert to uppercase
-    found_packets = []
-
-    # Iterate through packets and find magic bytes
-    for packet_number, packet in enumerate(capture):
-        packet_hex = ''.join(packet.raw_mode.split(':')).upper()
-        print(packet)
-
-        if magic_bytes in packet_hex:
-            protocol = packet.highest_layer
-            source_ip = packet.ip.src
-            destination_ip = packet.ip.dst
-
-            found_packets.append({
-                "packet_number": packet_number,
-                "protocol": protocol,
-                "source_ip": source_ip,
-                "destination_ip": destination_ip
-            })
-
-    # Display results
-    if found_packets:
-        print(f"Found {len(found_packets)} packets with magic bytes:")
-        for found_packet in found_packets:
-            print(f"Magic byte '{magic}' found in:")
-            print(f"Protocol: {found_packet['protocol']}")
-            print(f"Packet number: {found_packet['packet_number']}")
-            print(f"Source: {found_packet['source_ip']}")
-            print(f"Destination: {found_packet['destination_ip']}")
-            print("--------------------------")
-    else:
-        print("No packets with magic bytes found.")
 
 #-----------------------------------------------------------
 
@@ -90,14 +47,38 @@ def main():
     if len(sys.argv)<2:
         banner()
         menu()
+        listActions()
         sys.exit(0)
     try:
+        banner()
         pcap=sys.argv[1]
-        if "file" in sys.argv[2]:
-            magic=str(sys.argv[3])
-            banner() #works fine till here.
-            file(pcap,magic)
-
+        if "--scan_magics" in sys.argv[2]:
+           data=magic_bytes_find_all(pcap) 
+           for i in data:
+               print(f"{i}: {data[i]}")
+        elif "--scan_magic_detail" in sys.argv[2]:
+            from prettytable import PrettyTable
+            data=file_scan(pcap)
+            table=PrettyTable()
+            table.field_names=["File name","Magic Byte","Packet No.","Source IP","Destination IP","Packet Data with port","Source Port","Destination Port"]
+            for row in data:
+                table.add_row(row)
+            print(table)
+        elif "--magicbyte" in sys.argv[2]:
+            try:
+                mbyte=sys.argv[3]
+                data=magic_scan(pcap,mbyte)
+                from prettytable import PrettyTable
+                table=PrettyTable()
+                table.field_names=["Packet No.","Source IP","Destination IP","Packet Data with port","Source Port","Destination Port"]
+                for row in data:
+                    table.add_row(row)
+                print(table)
+            except Exception as e:
+                print(str(e))
+                listActions()
+                exit()
+            print(mbyte)
     except:
         listActions()
     
