@@ -1,47 +1,10 @@
-Functional requirements:-
+For command line
 
- elif scapy.layers.Telnet in tcp_packet:
-                if "Telnet" in data_structure:
-                    data_structure["Telnet"]+=1
-                else:
-                    data_structure["Telnet"]=1
-            elif scapy.layers.ftp.FTP in tcp_packet:
-                if "Telnet" in data_structure:
-                    data_structure["Telnet"]+=1
-                else:
-                    data_structure["Telnet"]=1
-            elif scapy.layers.SSH in tcp_packet:
-                if "SSH" in data_structure:
-                    data_structure["SSH"]+=1
-                else:
-                    data_structure["SSH"]=1
-            elif scapy.layers.HTTPS in tcp_packet:
-                if "HTTPS" in data_structure:
-                    data_structure["HTTPS"]+=1
-                else:
-                    data_structure["HTTPS"]=1
-            elif ICMP in packet:
-                if "ICMP" in data_structure:
-                    data_structure["ICMP"]+=1
-                else:
-                    data_structure["ICMP"]=1
-            elif scapy.layers.RDP in tcp_packet:
-                if "RDP" in data_structure:
-                    data_structure["RDP"]+=1
-                else:
-                    data_structure["RDP"]=1
-            elif scapy.layers.SMTP in tcp_packet:
-                if "SMTP" in data_structure:
-                    data_structure["SMTP"]+=1
-                else:
-                    data_structure["SMTP"]=1
-            elif scapy.layers.POP3 in tcp_packet:
-                if "POP3" in data_structure:
-                    data_structure["POP3"]+=1
-                else:
-                    data_structure["POP3"]=1
-            elif scapy.layers.SFTP in tcp_packet:
-                if "SFTP" in data_structure:
-                    data_structure["SFTP"]+=1
-                else:
-                    data_structure["SFTP"]=1
+Python pycap.py <pcap> <scan_type> <param if required>
+
+Currently we are in a first version of this tool. New versions shall be released leading to Cloud technologies. 
+
+Contact team: Syedalizain03@gmail.com
+Linkedin: https://linkedin.com/in/syedalizain033
+Secure Pwn: https://linkedin.com/company/secure-pwn/
+Github: Github.com/securepwn

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Forensics App</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo1.png') }}" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #3498db;
+          }
+          
+          li {
+            float: left;
+          }
+          
+          li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+          }
+
+        header {
+            background-color: #3498db;
+            color: #fff;
+            padding: 20px;
+        }
+
+       
+
+       
+        #image{
+            height: 16%;
+            width: 16%;
+            float: left;
+        }
+       #secPwn{
+        background-color: rgb(204, 240, 252);
+        padding: 20px;
+        margin: 10px;
+       }
+    </style>
+</head>
+<body>
+    <header>
+        <ul>
+            <li> <a class="active" href="https://linkedin.com/company/secure-pwn" target="_blank"> <img id="image" src="{{ url_for('static', filename='logo1.png') }}"></a> </li>
+            <li><a class="active" href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('investigate') }}">Investigate</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        <h1>Network Forensics App</h1>
+    </header>
+    <div id="secPwn">
+        <p>At Secure Pwn, we are deeply committed to giving back to the community that has been an integral part of our journey. We firmly believe in knowledge sharing, collaboration, and nurturing the next generation of cybersecurity and cloud professionals. To contribute to this mission, we organize a variety of community-driven events, workshops, and challenges that serve as platforms for students and experts from across the globe to come together. These initiatives enable participants to delve into the latest tools and techniques, engage in insightful discussions, and establish valuable connections with like-minded peers. Additionally, we regularly publish informative articles and resources aimed at sharing our expertise and insights with the broader community. At Secure Pwn, community engagement is not just a value—it's a commitment to empowering others in the ever-evolving realms of cybersecurity and cloud technology.
+        <br><br>Follow us at <a href="https://www.linkedin.com/company/secure-pwn" target="_blank">Linkedin.com/company/Secure-Pwn</a></p>
+    </div>
+    <div id="secPwn">
+        Author email: syedalizain03@gmail.com<br>
+        <a href="https://www.linkedin.com/in/syedalizain033/" target="_blank">Linkedin: Https://linkedin.com/in/syedalizain033</a>
+    </div>
+</body>
+</html>

@@ -126,7 +126,7 @@
         <li> <a class="active" href="https://linkedin.com/company/secure-pwn" target="_blank"> <img id="image" src="{{ url_for('static', filename='logo1.png') }}"></a> </li>
         <li><a class="active" href="{{ url_for('index') }}">Home</a></li>
         <li><a href="{{ url_for('investigate') }}">Investigate</a></li>
-        <li><a href="#about">About</a></li>
+        <li><a href="{{ url_for('about') }}">About</a></li>
       </ul>
     <div class="form-container">
         <form method="POST" action="/investigate">
